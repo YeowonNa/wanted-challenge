@@ -9,10 +9,11 @@ import {
 import SignIn from './pages/sign-in';
 import ErrorPage from './pages/error-page';
 import SignUp from './pages/sign-up';
+import Todo from './pages/todo';
 
 // 사용자 인증 상태 확인 함수
 const isAuthenticated = () => {
-  return localStorage.getItem('authToken') !== null;
+  return localStorage.getItem('authToken') == null;
 };
 
 // ProtectedRoute 컴포넌트
@@ -41,8 +42,7 @@ const AppRouter: React.FC = () => {
           element={
             <ProtectedRoute>
               <Routes>
-                {/* <Route path="todo" element={<Todo />} />
-                <Route path="des" element={<Dashboard />} /> */}
+                <Route path='todo' element={<Todo />} />
                 <Route path='*' element={<ErrorPage />} />
               </Routes>
             </ProtectedRoute>
