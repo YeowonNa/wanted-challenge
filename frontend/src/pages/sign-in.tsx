@@ -1,6 +1,6 @@
 import { useNavigate } from 'react-router-dom';
-
-export default function SignIn() {
+import { Card, Input, Button, Typography } from '@material-tailwind/react';
+export default function SignUn() {
   const navigate = useNavigate();
 
   const handleSignUp = () => {
@@ -9,35 +9,55 @@ export default function SignIn() {
 
   return (
     <div className='flex flex-col gap-4 h-screen items-center justify-center'>
-      <div className='pt-10 pb-6 px-10 w-full flex flex-col items-center justify-center max-w-lg border border-gray-400 bg-white gap-2'>
-        <h1 className='font-bold'>TODO LIST</h1>
-        <input
-          type='email'
-          className='w-full p-1 rounded-sm border border-gray-400'
-          placeholder='이메일을 입력해주세요.'
-        />
+      <div className='border border-solid border-gray-200 p-10 rounded-md shadow-md'>
+        <Card color='transparent' shadow={false}>
+          <Typography variant='h4' color='blue-gray'>
+            Sign In
+          </Typography>
+          <Typography color='gray' className='mt-1 font-normal'>
+            Todo List
+          </Typography>
+          <form className='mt-8 mb-2 w-80 max-w-screen-lg sm:w-96'>
+            <div className='mb-1 flex flex-col gap-6'>
+              <Typography variant='h6' color='blue-gray' className='-mb-3'>
+                Your Email
+              </Typography>
+              <Input
+                size='lg'
+                placeholder='name@mail.com'
+                className=' !border-t-blue-gray-200 focus:!border-t-gray-900'
+                labelProps={{
+                  className: 'before:content-none after:content-none',
+                }}
+              />
+              <Typography variant='h6' color='blue-gray' className='-mb-3'>
+                Password
+              </Typography>
+              <Input
+                type='password'
+                size='lg'
+                placeholder='********'
+                className=' !border-t-blue-gray-200 focus:!border-t-gray-900'
+                labelProps={{
+                  className: 'before:content-none after:content-none',
+                }}
+              />
+            </div>
 
-        <input
-          type='password'
-          className='w-full p-1 rounded-sm border border-gray-400'
-          placeholder='비밀번호를 입력해주세요.'
-        />
-        <button
-          color='light-blue'
-          className='w-full text-md py-1 rounded-md bg-blue-300 text-white'
-        >
-          로그인
-        </button>
-      </div>
-
-      <div className='py-4 w-full text-center text-sm max-w-lg border border-gray-400 bg-white'>
-        아직 계정이 없으신가요?
-        <button
-          className='text-light-blue-600 font-bold pl-1'
-          onClick={handleSignUp}
-        >
-          가입하기
-        </button>
+            <Button className='mt-6' fullWidth>
+              로그인
+            </Button>
+            <Typography color='gray' className='mt-4 text-center font-normal'>
+              아직 계정이 없으신가요?
+              <button
+                className='font-medium text-gray-900 pl-1'
+                onClick={handleSignUp}
+              >
+                가입하기
+              </button>
+            </Typography>
+          </form>
+        </Card>
       </div>
     </div>
   );
