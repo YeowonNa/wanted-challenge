@@ -1,10 +1,54 @@
 import { useNavigate } from 'react-router-dom';
 import { Card, Input, Button, Typography } from '@material-tailwind/react';
-export default function SignUn() {
+import { useForm, SubmitHandler } from 'react-hook-form';
+import { useMutation } from 'react-query';
+
+export type SignUpFormInputs = {
+  email: string;
+  password: string;
+};
+
+export default function SignUp() {
   const navigate = useNavigate();
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm<SignUpFormInputs>();
 
   const handleSignIn = () => {
-    navigate('/');
+    navigate('/auth/sign-in');
+  };
+
+  const signUpUser = async (data: SignUpFormInputs) => {
+    const response = await fetch('http://localhost:8080/users/create', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(data),
+    });
+
+    if (!response.ok) {
+      throw new Error('회원가입에 실패했습니다. 다시 시도해주세요.');
+    }
+
+    return response.json();
+  };
+
+  const mutation = useMutation(signUpUser, {
+    onSuccess: (data) => {
+      localStorage.setItem('token', data.token);
+      navigate('/todo');
+    },
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    onError: (error: any) => {
+      alert(error.message || '회원가입 중 문제가 발생했습니다.');
+    },
+  });
+
+  const onSubmit: SubmitHandler<SignUpFormInputs> = (data) => {
+    mutation.mutate(data);
   };
 
   return (
@@ -17,7 +61,10 @@ export default function SignUn() {
           <Typography color='gray' className='mt-1 font-normal'>
             Todo List
           </Typography>
-          <form className='mt-8 mb-2 w-80 max-w-screen-lg sm:w-96'>
+          <form
+            className='mt-8 mb-2 w-80 max-w-screen-lg sm:w-96'
+            onSubmit={handleSubmit(onSubmit)}
+          >
             <div className='mb-1 flex flex-col gap-6'>
               <Typography variant='h6' color='blue-gray' className='-mb-3'>
                 Your Email
@@ -25,11 +72,24 @@ export default function SignUn() {
               <Input
                 size='lg'
                 placeholder='name@mail.com'
-                className=' !border-t-blue-gray-200 focus:!border-t-gray-900'
+                {...register('email', {
+                  required: '이메일을 입력해주세요.',
+                  pattern: {
+                    value: /^\S+@\S+\.\S+$/,
+                    message: '이메일 형식을 확인해주세요.',
+                  },
+                })}
+                className='!border-t-blue-gray-200 focus:!border-t-gray-900'
                 labelProps={{
                   className: 'before:content-none after:content-none',
                 }}
               />
+              {errors.email && (
+                <Typography color='red' className='text-sm font-semibold'>
+                  * {errors.email.message}
+                </Typography>
+              )}
+
               <Typography variant='h6' color='blue-gray' className='-mb-3'>
                 Password
               </Typography>
@@ -37,14 +97,26 @@ export default function SignUn() {
                 type='password'
                 size='lg'
                 placeholder='********'
-                className=' !border-t-blue-gray-200 focus:!border-t-gray-900'
+                {...register('password', {
+                  required: '비밀번호를 입력해주세요.',
+                  minLength: {
+                    value: 8,
+                    message: '비밀번호는 8자리 이상으로 입력해주세요.',
+                  },
+                })}
+                className='!border-t-blue-gray-200 focus:!border-t-gray-900'
                 labelProps={{
                   className: 'before:content-none after:content-none',
                 }}
               />
+              {errors.password && (
+                <Typography color='red' className='text-sm font-semibold'>
+                  * {errors.password.message}
+                </Typography>
+              )}
             </div>
 
-            <Button className='mt-6' fullWidth>
+            <Button className='mt-6' fullWidth type='submit'>
               가입하기
             </Button>
             <Typography color='gray' className='mt-4 text-center font-normal'>
