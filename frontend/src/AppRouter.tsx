@@ -34,8 +34,8 @@ const AppRouter: React.FC = () => {
     <Router>
       <Routes>
         {/* 로그인 경로 */}
-        <Route path='/' element={<SignIn />} />
-        <Route path='/sign-up' element={<SignUp />} />
+        <Route path='/auth/sign-in' element={<SignIn />} />
+        <Route path='/auth/sign-up' element={<SignUp />} />
         {/* 인증된 사용자만 접근 가능한 경로 */}
         <Route
           path='/*'

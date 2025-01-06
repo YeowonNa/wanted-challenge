@@ -5,7 +5,7 @@ export default function ErrorPage() {
     <div style={{ textAlign: 'center', padding: '50px' }}>
       <h1>404</h1>
       <p>Page Not Found</p>
-      <Link to='/'>Go Back to Home</Link>
+      <Link to='/auth/sign-in'>Go Back to Home</Link>
     </div>
   );
 }
