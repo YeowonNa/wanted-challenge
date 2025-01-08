@@ -2,11 +2,7 @@ import { useNavigate } from 'react-router-dom';
 import { Card, Input, Button, Typography } from '@material-tailwind/react';
 import { SubmitHandler, useForm } from 'react-hook-form';
 import { useMutation } from 'react-query';
-
-export type SignInFormInputs = {
-  email: string;
-  password: string;
-};
+import { SignInFormInputs, signInUser } from '../api/auth';
 
 export default function SignIn() {
   const navigate = useNavigate();
@@ -21,25 +17,9 @@ export default function SignIn() {
     navigate('/auth/sign-up');
   };
 
-  const signInUser = async (data: SignInFormInputs) => {
-    const response = await fetch('http://localhost:8080/users/login', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(data),
-    });
-
-    if (!response.ok) {
-      throw new Error('로그인에 실패했습니다. 다시 시도해주세요.');
-    }
-
-    return response.json();
-  };
-
   const mutation = useMutation(signInUser, {
     onSuccess: (data) => {
-      localStorage.setItem('token', data.token);
+      localStorage.setItem('authToken', data.token);
       navigate('/todo');
     },
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -74,7 +54,7 @@ export default function SignIn() {
                 size='lg'
                 placeholder='name@mail.com'
                 {...register('email', {
-                  required: '이메일은 필수 항목입니다.',
+                  required: '이메일을 입력해주세요.',
                   pattern: {
                     value: /^\S+@\S+\.\S+$/,
                     message: '유효한 이메일을 입력해주세요.',
@@ -99,7 +79,7 @@ export default function SignIn() {
                 size='lg'
                 placeholder='********'
                 {...register('password', {
-                  required: '비밀번호는 필수 항목입니다.',
+                  required: '비밀번호를 입력해주세요.',
                 })}
                 className='!border-t-blue-gray-200 focus:!border-t-gray-900'
                 labelProps={{

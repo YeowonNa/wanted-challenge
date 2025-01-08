@@ -2,11 +2,7 @@ import { useNavigate } from 'react-router-dom';
 import { Card, Input, Button, Typography } from '@material-tailwind/react';
 import { useForm, SubmitHandler } from 'react-hook-form';
 import { useMutation } from 'react-query';
-
-export type SignUpFormInputs = {
-  email: string;
-  password: string;
-};
+import { SignUpFormInputs, signUpUser } from '../api/auth';
 
 export default function SignUp() {
   const navigate = useNavigate();
@@ -20,25 +16,9 @@ export default function SignUp() {
     navigate('/auth/sign-in');
   };
 
-  const signUpUser = async (data: SignUpFormInputs) => {
-    const response = await fetch('http://localhost:8080/users/create', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(data),
-    });
-
-    if (!response.ok) {
-      throw new Error('회원가입에 실패했습니다. 다시 시도해주세요.');
-    }
-
-    return response.json();
-  };
-
   const mutation = useMutation(signUpUser, {
     onSuccess: (data) => {
-      localStorage.setItem('token', data.token);
+      localStorage.setItem('authToken', data.token);
       navigate('/todo');
     },
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
