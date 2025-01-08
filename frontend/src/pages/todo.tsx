@@ -114,6 +114,10 @@ export default function Todo() {
     setIsEditing((prev) => !prev);
   };
 
+  const handleCancle = () => {
+    setIsEditing(false);
+  };
+
   const handleLogout = () => {
     localStorage.removeItem('authToken');
   };
@@ -225,9 +229,14 @@ export default function Todo() {
             </CardBody>
             <CardFooter>
               {isEditing && (
-                <Button variant='outlined' onClick={handleUpdateTodo}>
-                  저장
-                </Button>
+                <div className='flex gap-1'>
+                  <Button variant='outlined' onClick={handleUpdateTodo}>
+                    저장
+                  </Button>
+                  <Button variant='outlined' onClick={handleCancle}>
+                    취소
+                  </Button>
+                </div>
               )}
             </CardFooter>
           </Card>
