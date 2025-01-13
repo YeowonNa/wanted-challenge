@@ -14,21 +14,21 @@ import {
 import { useMutation, useQuery, useQueryClient } from 'react-query';
 import { createTodo, deleteTodo, fetchTodos, updateTodo } from '../api/todos';
 import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 
 export default function Todo() {
-  const [selectedTodo, setSelectedTodo] = useState<{
-    title: string;
-    content: string;
-    id: string;
-  } | null>(null);
+  const { id } = useParams();
+
   const [newTodoTitle, setNewTodoTitle] = useState('');
   const [newTodoContent, setNewTodoContent] = useState('');
   const [isEditing, setIsEditing] = useState(false);
 
-  const { data, isLoading, error } = useQuery('todos', fetchTodos);
   const queryClient = useQueryClient();
   const navigate = useNavigate();
+
+  const { data, isLoading, error } = useQuery('todos', fetchTodos);
+
+  const selectedTodo = id ? data?.data.find((todo) => todo.id === id) : null;
 
   const createMutation = useMutation(createTodo, {
     onSuccess: () => {
@@ -45,7 +45,7 @@ export default function Todo() {
   const deleteMutation = useMutation(deleteTodo, {
     onSuccess: () => {
       queryClient.invalidateQueries('todos');
-      setSelectedTodo(null);
+      navigate('/todo');
     },
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     onError: (error: any) => {
@@ -72,15 +72,11 @@ export default function Todo() {
   );
 
   const handleAddClick = () => {
-    setSelectedTodo(null);
+    navigate('/todo');
   };
 
-  const handleTodoClick = (todo: {
-    title: string;
-    content: string;
-    id: string;
-  }) => {
-    setSelectedTodo(todo);
+  const handleTodoClick = (todo: { id: string }) => {
+    navigate(`/todo/${todo.id}`);
   };
 
   const handleCreateTodo = () => {
@@ -161,7 +157,11 @@ export default function Todo() {
             </div>
             <List>
               {data?.data.map((todo) => (
-                <ListItem key={todo.id} onClick={() => handleTodoClick(todo)}>
+                <ListItem
+                  key={todo.id}
+                  onClick={() => handleTodoClick(todo)}
+                  selected={id === todo.id}
+                >
                   {todo.title}
                 </ListItem>
               ))}
@@ -176,11 +176,14 @@ export default function Todo() {
                 {isEditing ? (
                   <Input
                     value={selectedTodo.title}
-                    onChange={(e) =>
-                      setSelectedTodo((prev) =>
-                        prev ? { ...prev, title: e.target.value } : prev
-                      )
-                    }
+                    onChange={(e) => {
+                      if (!selectedTodo) return;
+                      updateMutation.mutate({
+                        id: selectedTodo.id,
+                        title: selectedTodo.title,
+                        content: e.target.value, // 새로운 값을 서버에 전달
+                      });
+                    }}
                     label='Title'
                   />
                 ) : (
@@ -214,11 +217,14 @@ export default function Todo() {
               {isEditing ? (
                 <Textarea
                   value={selectedTodo.content}
-                  onChange={(e) =>
-                    setSelectedTodo((prev) =>
-                      prev ? { ...prev, content: e.target.value } : prev
-                    )
-                  }
+                  onChange={(e) => {
+                    if (!selectedTodo) return;
+                    updateMutation.mutate({
+                      id: selectedTodo.id,
+                      title: selectedTodo.title,
+                      content: e.target.value, // 새로운 값을 서버에 전달
+                    });
+                  }}
                   label='Content'
                 />
               ) : (

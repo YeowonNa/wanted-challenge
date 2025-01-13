@@ -3,6 +3,7 @@ import Todo from './pages/todo';
 import SignIn from './pages/sign-in';
 import SignUp from './pages/sign-up';
 import ErrorPage from './pages/error-page';
+import { fetchTodos } from './api/todos';
 
 function authLoader() {
   const token = localStorage.getItem('authToken');
@@ -27,10 +28,19 @@ export const AppRouter = createBrowserRouter([
           {
             index: true,
             element: <Todo />,
+            loader: fetchTodos,
           },
           {
             path: ':id',
             element: <Todo />,
+            loader: async ({ params }) => {
+              const todos = await fetchTodos();
+              const todo = todos.data.find((todo) => todo.id === params.id);
+              if (!todo) {
+                throw new Error('해당 Todo를 찾을 수 없습니다.');
+              }
+              return { todo };
+            },
           },
         ],
       },
