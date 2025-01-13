@@ -2,6 +2,7 @@ import { createBrowserRouter, Navigate, redirect } from 'react-router-dom';
 import Todo from './pages/todo';
 import SignIn from './pages/sign-in';
 import SignUp from './pages/sign-up';
+import ErrorPage from './pages/error-page';
 
 function authLoader() {
   const token = localStorage.getItem('authToken');
@@ -27,6 +28,10 @@ export const AppRouter = createBrowserRouter([
             index: true,
             element: <Todo />,
           },
+          {
+            path: ':id',
+            element: <Todo />,
+          },
         ],
       },
     ],
@@ -47,5 +52,9 @@ export const AppRouter = createBrowserRouter([
         element: <SignUp />,
       },
     ],
+  },
+  {
+    path: '*',
+    element: <ErrorPage />,
   },
 ]);

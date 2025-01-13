@@ -14,9 +14,9 @@ import {
 import { useMutation, useQuery, useQueryClient } from 'react-query';
 import { createTodo, deleteTodo, fetchTodos, updateTodo } from '../api/todos';
 import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 
 export default function Todo() {
-  const [showCard, setShowCard] = useState(false);
   const [selectedTodo, setSelectedTodo] = useState<{
     title: string;
     content: string;
@@ -28,6 +28,7 @@ export default function Todo() {
 
   const { data, isLoading, error } = useQuery('todos', fetchTodos);
   const queryClient = useQueryClient();
+  const navigate = useNavigate();
 
   const createMutation = useMutation(createTodo, {
     onSuccess: () => {
@@ -72,7 +73,6 @@ export default function Todo() {
 
   const handleAddClick = () => {
     setSelectedTodo(null);
-    setShowCard(true);
   };
 
   const handleTodoClick = (todo: {
@@ -81,7 +81,6 @@ export default function Todo() {
     id: string;
   }) => {
     setSelectedTodo(todo);
-    setShowCard(true);
   };
 
   const handleCreateTodo = () => {
@@ -114,12 +113,13 @@ export default function Todo() {
     setIsEditing((prev) => !prev);
   };
 
-  const handleCancle = () => {
+  const handleCancel = () => {
     setIsEditing(false);
   };
 
   const handleLogout = () => {
     localStorage.removeItem('authToken');
+    navigate('/auth/sign-in');
   };
 
   if (isLoading) {
@@ -169,7 +169,7 @@ export default function Todo() {
           </CardBody>
         </Card>
 
-        {showCard && selectedTodo && (
+        {selectedTodo ? (
           <Card className='w-96 min-h-96'>
             <CardBody>
               <div className='mb-2 flex items-center justify-between'>
@@ -233,15 +233,14 @@ export default function Todo() {
                   <Button variant='outlined' onClick={handleUpdateTodo}>
                     저장
                   </Button>
-                  <Button variant='outlined' onClick={handleCancle}>
+                  <Button variant='outlined' onClick={handleCancel}>
                     취소
                   </Button>
                 </div>
               )}
             </CardFooter>
           </Card>
-        )}
-        {showCard && !selectedTodo && (
+        ) : (
           <Card className='w-96 min-h-96'>
             <CardBody>
               <Typography variant='h5' color='black' className='mb-5'>

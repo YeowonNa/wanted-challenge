@@ -15,9 +15,8 @@ export type CreateTodo = {
   content: string;
 };
 
-const token = localStorage.getItem('authToken');
-
 export const fetchTodos = async (): Promise<TodoItem> => {
+  const token = localStorage.getItem('authToken')!;
   if (!token) {
     throw new Error('로그인 토큰이 없습니다.');
   }
@@ -37,6 +36,7 @@ export const fetchTodos = async (): Promise<TodoItem> => {
 };
 
 export const createTodo = async (data: CreateTodo) => {
+  const token = localStorage.getItem('authToken')!;
   if (!token) {
     throw new Error('로그인 토큰이 없습니다.');
   }
@@ -61,6 +61,7 @@ export const createTodo = async (data: CreateTodo) => {
 };
 
 export const deleteTodo = async (id: string) => {
+  const token = localStorage.getItem('authToken')!;
   if (!token) {
     throw new Error('로그인 토큰이 없습니다.');
   }
