@@ -1,14 +1,21 @@
 import { createBrowserRouter, Navigate, redirect } from 'react-router-dom';
-import Todo from './pages/todo';
-import SignIn from './pages/sign-in';
-import SignUp from './pages/sign-up';
-import ErrorPage from './pages/error-page';
-import { fetchTodos } from './api/todos';
+import Todo from '../pages/todo';
+import ErrorPage from '../pages/error-page';
+import { fetchTodos } from '../features/todos/model/todos';
+import AuthPage from '../pages/auth';
 
 function authLoader() {
   const token = localStorage.getItem('authToken');
   if (!token) {
     return redirect('/auth/sign-in');
+  }
+  return null;
+}
+
+function guestLoader() {
+  const token = localStorage.getItem('authToken');
+  if (token) {
+    return redirect('/');
   }
   return null;
 }
@@ -48,6 +55,7 @@ export const AppRouter = createBrowserRouter([
   },
   {
     path: '/auth',
+    loader: guestLoader,
     children: [
       {
         index: true,
@@ -55,11 +63,11 @@ export const AppRouter = createBrowserRouter([
       },
       {
         path: 'sign-in',
-        element: <SignIn />,
+        element: <AuthPage />,
       },
       {
         path: 'sign-up',
-        element: <SignUp />,
+        element: <AuthPage />,
       },
     ],
   },

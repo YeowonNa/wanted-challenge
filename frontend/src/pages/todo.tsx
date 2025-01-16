@@ -12,7 +12,12 @@ import {
   Typography,
 } from '@material-tailwind/react';
 import { useMutation, useQuery, useQueryClient } from 'react-query';
-import { createTodo, deleteTodo, fetchTodos, updateTodo } from '../api/todos';
+import {
+  createTodo,
+  deleteTodo,
+  fetchTodos,
+  updateTodo,
+} from '../features/todos/model/todos';
 import { useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 
