@@ -1,8 +1,8 @@
 import { createBrowserRouter, Navigate, redirect } from 'react-router-dom';
-import Todo from '../pages/todo';
 import ErrorPage from '../pages/error-page';
 import { fetchTodos } from '../features/todos/model/todos';
 import AuthPage from '../pages/auth';
+import Todo from '../pages/todo';
 
 function authLoader() {
   const token = localStorage.getItem('authToken');
